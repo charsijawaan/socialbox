@@ -1,0 +1,58 @@
+{{> header}}
+<body id="wall">
+    {{> navbar}}
+    {{> sidebar}}
+    
+    <!--Wall with Post -->
+    <div class="content-posts active" id="posts">
+        {{!-- Create post div --}}
+        <div class="create-post" style="margin-left: 50px;">
+            <label for="exampleForm2">Create post</label>
+            <textarea id="status" class="form-control" rows="5" placeholder="What's on your mind {{username}} ?"></textarea>
+            <button id="share-button" class="btn btn-primary" data-username="{{myUsername}}">Share</button>            
+        </div>
+
+        {{!-- Posts container --}}
+        <div id="posts-container" class="container-fluid container-posts">
+        {{#if myPosts}}
+            {{#each myPosts}}
+                <div class="card-post">
+                    <div class="row">
+                        <div class="col-xs-3 col-sm-2">
+                            <a href="/user?person={{myProfilelink}}" title="Profile">
+                                <img src="img/usama.jpg" alt="User name" class="img-circle img-user">
+                            </a>
+                        </div>
+                        <div class="col-xs-9 col-sm-10 info-user">
+                            <h3><a href="/user?person={{myProfilelink}}" title="Profile">{{this.sharedby}}</a></h3>
+                            <p><i>{{this.sharetime}}</i></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 data-post">
+                            <p>{{this.posttext}}</p>
+                            <div class="reaction">
+                                &#x2764; 156 
+                            </div>
+                            <div class="comments">
+                                <div class="more-comments">View more comments</div>
+                                <ul>
+                                    <li><b>User1</b> comment 1</li>
+                                    <li><b>User2</b> comment 2 &#x1F602;</li>
+                                </ul>
+                                <form>
+                                    <input type="text" class="form-control" placeholder="Add a comment">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {{/each}}
+        {{/if}}
+        </div>
+    </div>
+    <script src="/js/sharepost.js"></script>
+</body>
+
+</html>
