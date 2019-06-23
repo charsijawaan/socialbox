@@ -2,15 +2,17 @@ $(document).ready(() => {
 
     $('#share-button').on('click', () => {
         var status = $('#status').val();
-        var myUsername = $('#share-button').attr('data-username');
+        var myUsername = $('#myUsername').val();
+        var sharedBy = $('#myID').val();
+        var myProfilePic = $('myProfilePic').val();
         var date = new Date();
-        savePost(status, myUsername, date);
+        savePost(status, myUsername, date, sharedBy, myProfilePic);
     });
 
 });
 
-function savePost(status, username, date) {
-    var data = 'post=' + status + '&date=' + date;
+function savePost(status, myUsername, date, sharedBy, myProfilePic) {
+    var data = 'post=' + status + '&date=' + date + '&sharedBy=' + sharedBy;
     $.ajax({
         url: '/wall/savepost',
         data: data,
@@ -21,12 +23,12 @@ function savePost(status, username, date) {
                 var newPost = `<div class="card-post">
                                 <div class="row">
                                     <div class="col-xs-3 col-sm-2">
-                                        <a href="/user" title="Profile">
-                                            <img src="img/usama.jpg" alt="User name" class="img-circle img-user">
+                                        <a href="/user` + myUsername + `" title="Profile">
+                                            <img src="img/` + myProfilePic + `" alt="User name" class="img-circle img-user">
                                         </a>
                                     </div>
                                     <div class="col-xs-9 col-sm-10 info-user">
-                                        <h3><a href="/user" title="Profile">` + username + `</a></h3>
+                                        <h3><a href="/user` + myUsername + `" title="Profile">` + username + `</a></h3>
                                         <p><i>` + date + `</i></p>
                                     </div>
                                 </div>

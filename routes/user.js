@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var { user } = require('./../db_modules/db_models/user');
 
 router.get('/:username', (req, res) => {
     if (req.session.email) {

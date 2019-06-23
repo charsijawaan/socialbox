@@ -11,6 +11,7 @@ var user = require('./routes/user');
 var wall = require('./routes/wall');
 var search = require('./routes/search');
 
+
 // settings
 var app = express();
 hbs.registerPartials(__dirname + '/views/partials');

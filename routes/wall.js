@@ -1,39 +1,41 @@
 var express = require('express');
 var router = express.Router();
-var { mongoose } = require('./../db_modules/mongoose');
-var { post } = require('./../db_modules/db_models/post');
+var conn = require('./../db_modules/connection');
 
 router.get('/', (req, res) => {
+    console.log('This is wall');
     if (req.session.email) {
-        post.find({
-            sharedby: req.session.username
-        }).sort({ '_id': -1 }).exec((err, posts) => {
-            res.render('wall', {
+        var sql = `SELECT * FROM post WHERE sharedBy = ?`;
+        conn.query(sql, [req.session.userID], (err, rows, fields) => {
+            res.render('wall.hbs', {
+                myID: req.session.userID,
                 myUsername: req.session.username,
-                myProfilepic: req.session.profilepic,
-                myProfilelink: req.session.profilelink,
-                myEmail: req.session.email,
-                myPosts: posts
+                myProfilePic: req.session.profilePic,
+                posts: rows
             });
         });
-    } else {
+    } else
         res.redirect('/login?session=expired');
-    }
 });
 
 router.post('/savepost', (req, res) => {
     if (req.session.email) {
-        var newPost = new post({
-            sharedby: req.session.username,
-            sharetime: req.body.date,
-            // postimage: String,
-            likes: 0,
-            posttext: req.body.post
+        var sql = `INSERT INTO post (sharedBy, shareTime, likes, postText)
+         VALUES (?, ?, ?, ?)`;
+        var sharedBy = req.body.sharedBy;
+        var shareTime = req.body.date;
+        var likes = 0;
+        var postText = req.body.post;
+
+        var data = [sharedBy, shareTime, likes, postText];
+        conn.query(sql, data, (err, rows, fields) => {
+            if (err)
+                console.log(err);
+            else
+                res.send('success');
+
         });
 
-        newPost.save().then(doc => {
-            res.send('success');
-        });
     }
 });
 

@@ -9,13 +9,13 @@
                 <div class="nearby-user">
                   <div class="row">
                     <div class="col-xs-2">
-                      <img src="img/{{this.profilepic}}" alt="user" class="profile-photo-lg">
+                      <img src="img/{{this.profilePic}}" alt="user" class="profile-photo-lg">
                     </div>
                     <div class="col-xs-7">
-                      <h5><a href="/user/{{this.profilelink}}" class="profile-link"><b>{{this.username}}</b></a></h5>
+                      <h5><a href="/user/{{this.username}}" class="profile-link"><b>{{this.username}}</b></a></h5>
                     </div>
                     <div class="col-xs-3">
-                      <button class="btn btn-primary pull-right">Add Friend</button>
+                      <button id="add-friend-button" data-id="{{this.id}}" class="btn btn-primary pull-right">Add Friend</button>
                     </div>
                   </div>
                 </div>
@@ -26,9 +26,9 @@
             <h2>No Users Found</h2>
           </div>
         {{/if}}
-        
-    </div>
+        </div>
 	</div>
 </div>
+<script type="text/javascript" src="/js/addfriend.js"></script>
 </body>
 </html>

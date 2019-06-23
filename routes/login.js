@@ -1,14 +1,15 @@
 var express = require('express');
 var router = express.Router();
-var { mongoose } = require('./../db_modules/mongoose');
-var { user } = require('./../db_modules/db_models/user');
-var { post } = require('./../db_modules/db_models/post');
+var conn = require('./../db_modules/connection');
 
 router.get('/', (req, res) => {
     res.render('login.hbs');
 });
 
 router.post('/', (req, res) => {
+
+    var username = req.body.username;
+    var password = req.body.password;
 
     // validation of form
     req.check('username', 'Minimum length of username should be 4').isLength({ min: 4 });
@@ -20,19 +21,17 @@ router.post('/', (req, res) => {
     if (errors) {
         res.redirect('/login?password_format=invalid&username_format=invalid');
     } else {
-        user.findOne({
-            username: req.body.username,
-            password: req.body.password
-        }).then((user) => {
-            if (!user) {
-                res.redirect('login?login_failed_username_or_password_incorrect');
-            } else {
-                req.session.email = user.email;
-                req.session.profilepic = user.profilepic;
-                req.session.username = user.username;
-                req.session.profilelink = user.profilelink
+        var sql = `SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1`;
+        var data = [username, password];
+        conn.query(sql, data, (err, rows, fields) => {
+            if (rows.length > 0) {
+                req.session.userID = rows[0].id;
+                req.session.username = rows[0].username;
+                req.session.email = rows[0].email;
+                req.session.profilePic = rows[0].profilePic;
                 res.redirect('wall');
-            }
+            } else
+                res.redirect('login?no_match_found');
         });
     }
 });

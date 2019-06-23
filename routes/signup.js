@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var { upload } = require('./../upload_modules/multer');
-var { mongoose } = require('./../db_modules/mongoose');
-var { user } = require('./../db_modules/db_models/user');
+var conn = require('./../db_modules/connection');
 
 router.get('/', (req, res) => {
     res.render('signup.hbs');
@@ -20,30 +19,24 @@ router.post('/', upload.single('profilepic'), (req, res) => {
     if (errors) {
         res.redirect('/signup?email_format=invalid&password_format=invalid&username_format=invalid');
     } else {
-        // making new user object according to user model
-        var newUser = new user({
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password,
-            profilepic: req.file.filename,
-            profilelink: req.body.username
+        var username = req.body.username;
+        var email = req.body.email;
+        var password = req.body.password;
+        var profilePic = req.file.filename;
+
+        var sql = `INSERT INTO user (username, email, password, profilePic) VALUES (?,?,?,?)`;
+        var data = [username, email, password, profilePic];
+        conn.query(sql, data, (err, rows, fields) => {
+            if (err)
+                console.log('user not added');
+            else {
+                req.session.username = username;
+                req.session.email = email;
+                req.session.profilePic = profilePic;
+                res.redirect('wall');
+            }
         });
 
-        // saving data in database
-        newUser.save().then((doc) => {
-            user.findOne({
-                username: req.body.username,
-                password: req.body.password
-            }).then((user) => {
-                req.session.email = user.email;
-                req.session.profilepic = user.profilepic;
-                req.session.username = user.username;
-                req.session.profilelink = user.profilelink
-                res.redirect('wall');
-            });
-        }, (e) => {
-            console.log('Unable to signup');
-        });
     }
 });
 
